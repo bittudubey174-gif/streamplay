@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'video_player_screen.dart'; 
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Unity Ads Initialization
   UnityAds.init(
-    gameId: '4747474', // यहाँ अपनी Unity Game ID डालना
+    gameId: '4747474',
     testMode: true,
-    onComplete: () => print('Ads Ready!'),
   );
-
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: StreamPlayHome(),
-  ));
+  runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: StreamPlayHome()));
 }
 
 class StreamPlayHome extends StatelessWidget {
@@ -24,45 +17,51 @@ class StreamPlayHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0F0F), // डार्क बैकग्राउंड
+      backgroundColor: const Color(0xFF0F0F0F),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text('StreamPlay', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-        actions: [
-          // यह रहा तुम्हारा बेल आइकन
-          IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none, color: Colors.white)),
-        ],
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.notifications_none, color: Colors.white))],
       ),
       body: Column(
         children: [
-          // यह रहा तुम्हारा सर्च बॉक्स
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: 'Search movies...',
+                hintText: 'Search video...',
                 hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: const Color(0xFF1E1E1E),
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: BorderSide.none),
               ),
             ),
           ),
           const Spacer(),
-          // एड्स टेस्ट करने के लिए बटन
           Center(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
               onPressed: () {
-                UnityAds.showVideoAd(placementId: 'RewardedVideo_Android');
+                UnityAds.showVideoAd(
+                  placementId: 'RewardedVideo_Android',
+                  onComplete: (placementId) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const VideoPlayerScreen(videoId: 'dQw4w9WgXcQ'),
+                      ),
+                    );
+                  },
+                );
               },
-              child: const Text('Watch Ad to Play Video'),
+              icon: const Icon(Icons.play_arrow),
+              label: const Text('Watch Ad & Play'),
             ),
           ),
           const Spacer(),
@@ -71,4 +70,3 @@ class StreamPlayHome extends StatelessWidget {
     );
   }
 }
-
